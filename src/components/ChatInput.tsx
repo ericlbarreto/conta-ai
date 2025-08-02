@@ -1,4 +1,4 @@
-import { useState, useRef, KeyboardEvent } from 'react';
+import { useState, useRef, KeyboardEvent, ChangeEvent } from 'react';
 import { Send, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,11 +8,13 @@ interface ChatInputProps {
   isLoading: boolean;
   hasFiles: boolean;
   disabled?: boolean;
+  onFileSelect?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false }: ChatInputProps) => {
+const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFileSelect }: ChatInputProps) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     if (!message.trim() || isLoading) return;
@@ -38,6 +40,10 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false }: Cha
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+  };
+
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
   };
 
   const suggestedQuestions = hasFiles ? [
@@ -90,10 +96,31 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false }: Cha
             onKeyPress={handleKeyPress}
             placeholder={disabled ? "Configure a API key para começar..." : hasFiles ? "Faça uma pergunta sobre seus documentos..." : "Envie documentos e faça perguntas..."}
             disabled={isLoading || disabled}
-            className="min-h-[44px] max-h-32 resize-none pr-12 transition-all"
+            className="min-h-[44px] max-h-32 resize-none pr-24 transition-all"
             style={{ height: 'auto' }}
           />
         </div>
+        
+        {/* Botão de anexar */}
+        <Button
+          onClick={handleFileClick}
+          disabled={isLoading || disabled}
+          size="sm"
+          variant="outline"
+          className="h-11 w-11 p-0 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
+        >
+          <Paperclip className="h-4 w-4" />
+        </Button>
+        
+        {/* Input de arquivo oculto */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept=".pdf,.xlsx,.xls,.csv"
+          onChange={onFileSelect}
+          className="hidden"
+        />
         
         <Button
           onClick={handleSend}
@@ -109,7 +136,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false }: Cha
         {disabled
           ? "🔑 Configure sua API key OpenAI para usar o assistente"
           : hasFiles 
-            ? "💡 Use Shift+Enter para quebra de linha" 
+            ? "💡 Use Shift+Enter para quebra de linha • Clique no clipe para anexar arquivos" 
             : "🚀 Envie documentos PDF, Excel ou CSV para análise inteligente"
         }
       </p>
