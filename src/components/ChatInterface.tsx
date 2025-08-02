@@ -4,7 +4,10 @@ import { Card } from '@/components/ui/card';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import { ChatMessage as IChatMessage, DocumentFile } from '@/types';
-import { AIService } from '@/services/aiService';
+import { useOpenAI } from '@/hooks/useOpenAI';
+import ApiKeyModal from './ApiKeyModal';
+import { Button } from '@/components/ui/button';
+import { Settings } from 'lucide-react';
 
 interface ChatInterfaceProps {
   documents: DocumentFile[];
@@ -13,12 +16,15 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ documents }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<IChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const aiService = new AIService();
+  const { service, isConfigured, configureApiKey } = useOpenAI();
 
   useEffect(() => {
-    aiService.setDocuments(documents);
-  }, [documents]);
+    if (service) {
+      service.setDocuments(documents);
+    }
+  }, [documents, service]);
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages are added
@@ -31,6 +37,11 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
   }, [messages]);
 
   const handleSendMessage = async (content: string) => {
+    if (!isConfigured || !service) {
+      setShowApiKeyModal(true);
+      return;
+    }
+
     const userMessage: IChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -42,7 +53,7 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
     setIsLoading(true);
 
     try {
-      const response = await aiService.processQuery(content);
+      const response = await service.processQuery(content);
       
       const assistantMessage: IChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -52,11 +63,11 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage: IChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "❌ **Desculpe, ocorreu um erro interno.**\n\nTente novamente em alguns instantes. Se o problema persistir, verifique sua conexão ou recarregue a página.\n\n**Estou aqui para ajudar assim que possível!** 😊",
+        content: error.message || "❌ **Desculpe, ocorreu um erro interno.**\n\nTente novamente em alguns instantes. Se o problema persistir, verifique sua conexão ou recarregue a página.\n\n**Estou aqui para ajudar assim que possível!** 😊",
         timestamp: new Date()
       };
 
@@ -67,8 +78,22 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
   };
 
   return (
-    <Card className="flex h-[600px] flex-col bg-gradient-card shadow-medium">
-      <div className="flex-1 p-4">
+    <>
+      <Card className="flex h-[600px] flex-col bg-gradient-card shadow-medium">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h3 className="font-semibold">ContaBot Pro</h3>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowApiKeyModal(true)}
+            className="gap-2"
+          >
+            <Settings className="h-4 w-4" />
+            {isConfigured ? 'Configurado ✓' : 'Configurar API'}
+          </Button>
+        </div>
+        
+        <div className="flex-1 p-4">
         <ScrollArea ref={scrollAreaRef} className="h-full pr-4">
           <div className="space-y-6">
             {messages.length === 0 && (
@@ -78,9 +103,11 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
                 </div>
                 <h3 className="mb-2 text-lg font-semibold">Olá! Sou seu assistente contábil 😊</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  {documents.length > 0 
-                    ? "Agora posso analisar seus documentos! Faça perguntas sobre receitas, despesas, lucros ou solicite gráficos e relatórios." 
-                    : "Envie seus documentos contábeis (PDF, Excel, CSV) para começarmos a análise inteligente dos seus dados."
+                  {!isConfigured 
+                    ? "Configure sua API key OpenAI para começar a usar o assistente inteligente."
+                    : documents.length > 0 
+                      ? "Agora posso analisar seus documentos! Faça perguntas sobre receitas, despesas, lucros ou solicite gráficos e relatórios." 
+                      : "Envie seus documentos contábeis (PDF, Excel, CSV) para começarmos a análise inteligente dos seus dados."
                   }
                 </p>
               </div>
@@ -116,9 +143,17 @@ const ChatInterface = ({ documents }: ChatInterfaceProps) => {
           onSendMessage={handleSendMessage}
           isLoading={isLoading}
           hasFiles={documents.length > 0}
+          disabled={!isConfigured}
         />
       </div>
     </Card>
+
+    <ApiKeyModal
+      open={showApiKeyModal}
+      onOpenChange={setShowApiKeyModal}
+      onSave={configureApiKey}
+    />
+    </>
   );
 };
 

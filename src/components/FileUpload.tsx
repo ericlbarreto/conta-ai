@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { DocumentFile } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { DocumentProcessor } from '@/services/documentProcessor';
 
 interface FileUploadProps {
   onFilesUploaded: (files: DocumentFile[]) => void;
@@ -16,38 +17,9 @@ const FileUpload = ({ onFilesUploaded, uploadedFiles, onRemoveFile }: FileUpload
   const [isProcessing, setIsProcessing] = useState(false);
 
   const processFile = useCallback(async (file: File): Promise<DocumentFile> => {
-    // Simulate file processing
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const documentFile: DocumentFile = {
-          id: Math.random().toString(36).substr(2, 9),
-          name: file.name,
-          type: file.name.includes('.pdf') ? 'pdf' : file.name.includes('.xls') ? 'excel' : 'csv',
-          size: file.size,
-          uploadedAt: new Date(),
-          content: `Conteúdo extraído de ${file.name} - Dados contábeis simulados para demonstração`,
-          data: {
-            // Simulated accounting data
-            receitas: [
-              { mes: 'Janeiro', valor: 150000 },
-              { mes: 'Fevereiro', valor: 180000 },
-              { mes: 'Março', valor: 165000 },
-              { mes: 'Abril', valor: 195000 }
-            ],
-            despesas: [
-              { mes: 'Janeiro', valor: 120000 },
-              { mes: 'Fevereiro', valor: 140000 },
-              { mes: 'Março', valor: 135000 },
-              { mes: 'Abril', valor: 155000 }
-            ],
-            lucroLiquido: 40000,
-            impostos: 25000,
-            margem: 20.5
-          }
-        };
-        resolve(documentFile);
-      }, 1500);
-    });
+    // Add delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
+    return await DocumentProcessor.processFile(file);
   }, []);
 
   const handleFileUpload = useCallback(async (files: FileList) => {

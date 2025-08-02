@@ -51,14 +51,14 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
         {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
       </div>
       
-      <Card className={`max-w-[85%] p-4 ${
+      <Card className={`max-w-[85%] p-4 break-words ${
         isUser 
           ? 'bg-primary text-primary-foreground shadow-soft' 
           : 'bg-card shadow-soft hover:shadow-medium transition-shadow'
       }`}>
         <div className="group relative">
           <div 
-            className="prose prose-sm max-w-none text-inherit"
+            className="prose prose-sm max-w-none text-inherit [&>*]:break-words [&>pre]:overflow-x-auto [&>pre]:max-w-full"
             dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
           />
           

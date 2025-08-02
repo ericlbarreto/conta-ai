@@ -7,9 +7,10 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isLoading: boolean;
   hasFiles: boolean;
+  disabled?: boolean;
 }
 
-const ChatInput = ({ onSendMessage, isLoading, hasFiles }: ChatInputProps) => {
+const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false }: ChatInputProps) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -87,8 +88,8 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles }: ChatInputProps) => {
               adjustTextareaHeight();
             }}
             onKeyPress={handleKeyPress}
-            placeholder={hasFiles ? "Faça uma pergunta sobre seus documentos..." : "Envie seus documentos para começar..."}
-            disabled={isLoading || !hasFiles}
+            placeholder={disabled ? "Configure a API key para começar..." : hasFiles ? "Faça uma pergunta sobre seus documentos..." : "Envie documentos e faça perguntas..."}
+            disabled={isLoading || disabled}
             className="min-h-[44px] max-h-32 resize-none pr-12 transition-all"
             style={{ height: 'auto' }}
           />
@@ -96,7 +97,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles }: ChatInputProps) => {
         
         <Button
           onClick={handleSend}
-          disabled={!message.trim() || isLoading || !hasFiles}
+          disabled={!message.trim() || isLoading || disabled}
           size="sm"
           className="h-11 w-11 p-0 bg-gradient-primary hover:shadow-medium transition-all"
         >
@@ -105,9 +106,11 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles }: ChatInputProps) => {
       </div>
       
       <p className="text-xs text-muted-foreground text-center">
-        {hasFiles 
-          ? "💡 Use Shift+Enter para quebra de linha" 
-          : "🚀 Envie documentos PDF, Excel ou CSV para análise inteligente"
+        {disabled
+          ? "🔑 Configure sua API key OpenAI para usar o assistente"
+          : hasFiles 
+            ? "💡 Use Shift+Enter para quebra de linha" 
+            : "🚀 Envie documentos PDF, Excel ou CSV para análise inteligente"
         }
       </p>
     </div>
