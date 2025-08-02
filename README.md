@@ -1,73 +1,174 @@
-# Welcome to your Lovable project
+# ContaAI - Análise Contábil Inteligente
 
-## Project info
+<div align="center">
+  <img src="https://img.shields.io/badge/React-18.2.0-blue?style=for-the-badge&logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind-3.3-blue?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Vite-5.0-purple?style=for-the-badge&logo=vite" alt="Vite" />
+</div>
 
-**URL**: https://lovable.dev/projects/f2560e0b-6e54-4e84-966c-9491c3adbf43
+## 🚀 Sobre o Projeto
 
-## How can I edit this code?
+**ContaAI** é uma plataforma inovadora de análise contábil inteligente que transforma documentos contábeis em insights poderosos. Utilizando tecnologia de IA avançada, oferecemos análise instantânea de receitas, despesas, lucros e tendências financeiras.
 
-There are several ways of editing your application.
+### ✨ Principais Funcionalidades
 
-**Use Lovable**
+- 🤖 **IA Especializada** - Análise inteligente de documentos contábeis
+- 📊 **Análise Completa** - Receitas, despesas, lucros, impostos e tendências
+- ⚡ **Resposta Instantânea** - Resultados em segundos
+- 🔒 **Seguro e Privado** - Criptografia de ponta a ponta
+- 📁 **Upload Inteligente** - Suporte a PDF, Excel e CSV
+- 💬 **Chat Interativo** - Interface conversacional intuitiva
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f2560e0b-6e54-4e84-966c-9491c3adbf43) and start prompting.
+## 🛠️ Tecnologias Utilizadas
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18 + TypeScript
+- **Estilização**: Tailwind CSS + shadcn/ui
+- **Build Tool**: Vite
+- **HTTP Client**: Axios
+- **Ícones**: Lucide React
+- **Formatação**: Markdown
 
-**Use your preferred IDE**
+## 📦 Instalação e Configuração
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Pré-requisitos
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js 18+ 
+- npm ou yarn
 
-Follow these steps:
+### Passos para Instalação
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# 1. Clone o repositório
+git clone https://github.com/ericlbarreto/conta-ai
+cd conta-ai
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Instale as dependências
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Configure as variáveis de ambiente (opcional)
+echo "VITE_API_URL=http://localhost:3001" > .env
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Execute o projeto
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Scripts Disponíveis
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Desenvolvimento
+npm run dev          # Inicia o servidor de desenvolvimento
 
-**Use GitHub Codespaces**
+# Build
+npm run build        # Gera build de produção
+npm run preview      # Visualiza o build de produção
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Linting
+npm run lint         # Executa o linter
+npm run lint:fix     # Corrige problemas de linting
+```
 
-## What technologies are used for this project?
+## 🎯 Como Usar
 
-This project is built with:
+### 1. Upload de Documentos
+- Arraste e solte arquivos PDF, Excel ou CSV no chat
+- Ou clique no ícone de clipe para selecionar arquivos
+- Suporte a múltiplos arquivos simultâneos
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### 2. Análise Inteligente
+- Faça perguntas sobre seus dados contábeis
+- Exemplos de perguntas:
+  - "Qual foi o lucro líquido no último período?"
+  - "Gere um resumo das receitas e despesas"
+  - "Sugira gráficos para análise dos dados"
+  - "Identifique tendências nos números"
 
-## How can I deploy this project?
+### 3. Insights Automáticos
+- Receba análises detalhadas em tempo real
+- Visualize tendências e padrões
+- Obtenha sugestões de otimização
 
-Simply open [Lovable](https://lovable.dev/projects/f2560e0b-6e54-4e84-966c-9491c3adbf43) and click on Share -> Publish.
+## 🏗️ Estrutura do Projeto
 
-## Can I connect a custom domain to my Lovable project?
+```
+src/
+├── components/           # Componentes React
+│   ├── ui/             # Componentes UI (shadcn)
+│   ├── ChatInterface.tsx
+│   ├── ChatInput.tsx
+│   ├── ChatMessage.tsx
+│   └── Header.tsx
+├── hooks/              # Hooks personalizados
+│   └── useChat.ts
+├── services/           # Serviços e APIs
+│   ├── apiService.ts
+│   └── aiService.ts
+├── config/            # Configurações
+│   └── api.ts
+├── pages/             # Páginas da aplicação
+│   └── Index.tsx
+└── types/             # Definições de tipos
+    └── index.ts
+```
 
-Yes, you can!
+## 🔧 Configuração da API
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Variáveis de Ambiente
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_API_URL=http://localhost:3001
+```
+
+### Estrutura da API Esperada
+
+#### Health Check
+```http
+GET /api/health
+```
+
+#### Chat com IA
+```http
+POST /api/ai/chat
+Content-Type: multipart/form-data
+
+{
+  "message": "string",
+  "files": [File, File, ...]
+}
+```
+
+## 🎨 Interface
+
+### Layout Responsivo
+- **Desktop**: Layout de duas colunas com chat fixo
+- **Mobile**: Layout em coluna única
+- **Chat**: Interface conversacional com drag & drop
+
+### Features Visuais
+- Design moderno e limpo
+- Tema escuro por padrão
+- Animações suaves
+- Feedback visual em tempo real
+
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+
+---
+
+<div align="center">
+  <p>Desenvolvido com ❤️ pela equipe ContaAI</p>
+  <p>Transformando análise contábil com IA</p>
+</div>
