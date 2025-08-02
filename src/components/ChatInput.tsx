@@ -52,7 +52,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
     "Sugira gráficos para análise dos dados",
     "Identifique tendências nos números"
   ] : [
-    "Como posso começar a usar o ContaBot Pro?",
+    "Como posso começar a usar o  ContaAI?",
     "Que tipos de arquivo posso enviar?",
     "Como funciona a análise inteligente?"
   ];

@@ -72,7 +72,7 @@ const ChatInterface = () => {
     <div className="flex flex-col h-full">
       <Card className="flex flex-col h-[600px] bg-gradient-card shadow-medium">
         <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
-          <h3 className="font-semibold">ContaBot Pro</h3>
+          <h3 className="font-semibold">ContaAI</h3>
           <div className="flex gap-2">
             <Button
               variant="outline"

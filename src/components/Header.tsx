@@ -10,7 +10,7 @@ const Header = () => {
             <Calculator className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">ContaBot Pro</h1>
+            <h1 className="text-xl font-bold text-foreground">ContaAI</h1>
             <p className="text-xs text-muted-foreground">Análise Contábil Inteligente</p>
           </div>
         </div>

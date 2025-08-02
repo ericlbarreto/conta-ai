@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ContaBot Pro Design System - Accounting Intelligence Platform
+/* ContaAI Design System - Accounting Intelligence Platform
 All colors MUST be HSL.
 */
 
@@ -108,7 +108,7 @@ All colors MUST be HSL.
   }
 }
 
-/* Custom gradients and animations for ContaBot Pro */
+/* Custom gradients and animations for ContaAIo */
 @layer base {
   :root {
     /* Beautiful green gradients */
