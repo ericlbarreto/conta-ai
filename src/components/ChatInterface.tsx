@@ -5,11 +5,12 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import { useChat } from '@/hooks/useChat';
 import { Button } from '@/components/ui/button';
-import { Trash2, Paperclip } from 'lucide-react';
+import { Trash2, Paperclip, Maximize2, Minimize2 } from 'lucide-react';
 
 const ChatInterface = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const {
     messages,
     isLoading,
@@ -69,11 +70,35 @@ const ChatInterface = () => {
   }, [addFiles]);
 
   return (
-    <div className="flex flex-col h-full">
-      <Card className="flex flex-col h-[600px] bg-gradient-card shadow-medium">
+    <div className={`flex flex-col transition-all duration-300 ease-in-out ${
+      isExpanded 
+        ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'   
+        : 'h-full'
+    }`}>
+      <Card className={`flex flex-col transition-all duration-300 ease-in-out ${
+        isExpanded ? 'h-full scale-100' : 'h-[600px]'
+      } bg-gradient-card shadow-medium`}>
         <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
           <h3 className="font-semibold">ContaAI</h3>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="gap-2 transition-all duration-200 hover:scale-105"
+            >
+              {isExpanded ? (
+                <>
+                  <Minimize2 className="h-4 w-4" />
+                  Minimizar
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="h-4 w-4" />
+                  Expandir
+                </>
+              )}
+            </Button>
             <Button
               variant="outline"
               size="sm"
