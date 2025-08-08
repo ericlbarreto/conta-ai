@@ -1,11 +1,11 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
-import { useChat } from '@/hooks/useChat';
 import { Button } from '@/components/ui/button';
-import { Trash2, Paperclip, Maximize2, Minimize2 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useChat } from '@/hooks/useChat';
+import { Maximize2, Minimize2, Paperclip, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
 
 const ChatInterface = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -16,7 +16,6 @@ const ChatInterface = () => {
     isLoading,
     uploadedFiles,
     addFiles,
-    removeFile,
     clearFiles,
     sendMessage,
     clearMessages
@@ -47,7 +46,7 @@ const ChatInterface = () => {
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     
@@ -58,14 +57,14 @@ const ChatInterface = () => {
     });
     
     if (validFiles.length > 0) {
-      addFiles(validFiles);
+      await addFiles(validFiles);
     }
   }, [addFiles]);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      addFiles(files);
+      await addFiles(files);
     }
   }, [addFiles]);
 
@@ -75,8 +74,8 @@ const ChatInterface = () => {
         ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'   
         : 'h-full'
     }`}>
-      <Card className={`flex flex-col transition-all duration-300 ease-in-out ${
-        isExpanded ? 'h-full scale-100' : 'h-[600px]'
+      <Card className={`h-full mb-3 flex flex-col transition-all duration-300 ease-in-out ${
+        isExpanded ? 'scale-100' : ''
       } bg-gradient-card shadow-medium`}>
         <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
           <h3 className="font-semibold">ContaAI</h3>
@@ -130,7 +129,7 @@ const ChatInterface = () => {
                   Solte seus arquivos aqui
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  PDF, Excel ou CSV
+                  PDF
                 </p>
               </div>
             </div>
@@ -145,7 +144,7 @@ const ChatInterface = () => {
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">Olá! Sou seu assistente contábil 😊</h3>
                   <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                    Envie seus documentos contábeis (PDF, Excel, CSV) para começarmos a análise inteligente dos seus dados.
+                    Envie seus documentos contábeis (PDF) para começarmos a análise inteligente dos seus dados.
                   </p>
                 </div>
               )}
@@ -188,7 +187,7 @@ const ChatInterface = () => {
 
       {/* Arquivos selecionados - sempre visível */}
       {uploadedFiles.length > 0 && (
-        <div className="mt-4 flex-shrink-0">
+        <div className="my-4 flex-shrink-0">
           <div className="space-y-2">
             <h4 className="text-sm font-medium">Arquivos selecionados:</h4>
             <div className="max-h-32 overflow-y-auto space-y-2">
@@ -205,15 +204,6 @@ const ChatInterface = () => {
                       </p>
                     </div>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeFile(index)}
-                    className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </Card>
               ))}
             </div>

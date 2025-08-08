@@ -1,4 +1,4 @@
-import { DocumentFile, ChatMessage } from '@/types';
+import { DocumentFile } from '@/types';
 
 // Service para integração com API de IA
 export class AIService {
@@ -54,7 +54,7 @@ export class AIService {
   getNoDocumentsResponse(): string {
     return `📋 **Olá! Sou seu assistente de análise contábil** 😊
 
-Para começarmos, preciso que você envie seus documentos contábeis (PDF, Excel ou CSV). 
+Para começarmos, preciso que você envie seus documentos contábeis (PDF). 
 
 Após o upload, poderei ajudá-lo com:
 • 📊 Análise de receitas e despesas

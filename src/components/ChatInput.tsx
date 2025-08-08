@@ -1,18 +1,19 @@
-import { useState, useRef, KeyboardEvent, ChangeEvent } from 'react';
-import { Send, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Paperclip, Send, Upload } from 'lucide-react';
+import { ChangeEvent, DragEvent, KeyboardEvent, useRef, useState } from 'react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isLoading: boolean;
   hasFiles: boolean;
   disabled?: boolean;
-  onFileSelect?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onFileSelect?: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
 }
 
 const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFileSelect }: ChatInputProps) => {
   const [message, setMessage] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +47,33 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
     fileInputRef.current?.click();
   };
 
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0 && onFileSelect) {
+      // Simular um evento de change para o input de arquivo
+      const event = {
+        target: {
+          files: e.dataTransfer.files
+        }
+      } as ChangeEvent<HTMLInputElement>;
+      
+      await onFileSelect(event);
+    }
+  };
+
   const suggestedQuestions = hasFiles ? [
     "Qual foi o lucro líquido no último período?",
     "Gere um resumo das receitas e despesas",
@@ -60,14 +88,38 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
   return (
     <div className="space-y-3">
       {!hasFiles && (
-        <div className="text-center p-4 bg-gradient-card rounded-lg border">
-          <Paperclip className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground mb-2">
-            📊 Envie seus documentos contábeis para começar a análise inteligente
+        <div
+          className={`text-center px-6 py-3 bg-gradient-card rounded-lg border-2 border-dashed transition-all duration-300 ease-in-out cursor-pointer
+            ${isDragOver
+              ? 'border-primary/60 bg-primary/5 scale-105 shadow-lg' 
+              : 'border-muted-foreground/20 hover:border-primary/40 hover:bg-primary/5'
+            }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleFileClick}
+        >
+          <div className={`transition-all duration-300 ${isDragOver ? 'scale-110' : ''}`}>
+            {isDragOver ? (
+              <Upload className="h-12 w-12 mx-auto mb-3 text-primary animate-bounce" />
+            ) : (
+              <Paperclip className="h-8 w-8 mx-auto mb-2 text-muted-foreground transition-colors duration-300" />
+            )}
+          </div>
+          <p className={`text-sm mb-2 transition-all duration-300 ${
+            isDragOver ? 'text-primary font-medium' : 'text-muted-foreground'
+          }`}>
+            {isDragOver 
+              ? "🎯 Solte seus arquivos aqui!" 
+              : "📊 Arraste e solte ou clique para enviar seus documentos contábeis"
+            }
+          </p>
+          <p className="text-xs text-muted-foreground/70">
+            Suporta PDF
           </p>
         </div>
       )}
-      
+
       {/* Suggested Questions */}
       <div className="flex flex-wrap gap-2">
         {suggestedQuestions.map((question, index) => (
@@ -107,7 +159,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
           disabled={isLoading || disabled}
           size="sm"
           variant="outline"
-          className="h-11 w-11 p-0 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
+          className="h-12 w-12 p-0 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
         >
           <Paperclip className="h-4 w-4" />
         </Button>
@@ -117,7 +169,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
           ref={fileInputRef}
           type="file"
           multiple
-          accept=".pdf,.xlsx,.xls,.csv"
+          accept=".pdf"
           onChange={onFileSelect}
           className="hidden"
         />
@@ -126,7 +178,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
           onClick={handleSend}
           disabled={!message.trim() || isLoading || disabled}
           size="sm"
-          className="h-11 w-11 p-0 bg-gradient-primary hover:shadow-medium transition-all"
+          className="h-12 w-12 p-0 bg-gradient-primary hover:shadow-medium transition-all"
         >
           <Send className={`h-4 w-4 ${isLoading ? 'animate-pulse' : ''}`} />
         </Button>
@@ -137,7 +189,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
           ? "🔑 Configure sua API key OpenAI para usar o assistente"
           : hasFiles 
             ? "💡 Use Shift+Enter para quebra de linha • Clique no clipe para anexar arquivos" 
-            : "🚀 Envie documentos PDF, Excel ou CSV para análise inteligente"
+            : "🚀 Arraste e solte ou clique para enviar documentos PDF"
         }
       </p>
     </div>

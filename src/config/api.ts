@@ -1,13 +1,15 @@
 // Configurações da API
 export const API_CONFIG = {
   // URL base da API de IA
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
   
   // Endpoint para chat
-  CHAT_ENDPOINT: '/api/ai/chat',
+  CHAT_ENDPOINT: '/question',
+
+  UPLOAD_ENDPOINT: '/upload-pdf',
   
   // Endpoint para health check
-  HEALTH_ENDPOINT: '/api/health',
+  HEALTH_ENDPOINT: '/status',
   
   // Timeout das requisições (30 segundos)
   TIMEOUT: 30000,

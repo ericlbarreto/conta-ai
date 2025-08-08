@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
-import { ChatMessage } from '@/types';
-import { APIService } from '@/services/apiService';
 import { toast } from '@/hooks/use-toast';
+import { APIService } from '@/services/apiService';
+import { ChatMessage } from '@/types';
+import { useCallback, useState } from 'react';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -10,14 +10,64 @@ export const useChat = () => {
   
   const apiService = new APIService();
 
-  // Adiciona arquivos
-  const addFiles = useCallback((files: File[]) => {
-    setUploadedFiles(prev => [...prev, ...files]);
-  }, []);
+  // Adiciona arquivos e faz upload
+  const addFiles = useCallback(async (files: File[]) => {
+    if (files.length === 0) return;
 
-  // Remove arquivo por índice
-  const removeFile = useCallback((index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+    setIsLoading(true);
+    
+    try {
+      // Faz upload dos arquivos
+      const uploadMessage = await apiService.uploadFiles(files);
+      
+      // Adiciona os arquivos ao estado local
+      setUploadedFiles(prev => [...prev, ...files]);
+      
+      // Adiciona mensagem de sucesso
+      const successMessage: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: `✅ **Arquivos enviados com sucesso!**
+
+${uploadMessage}
+
+Agora você pode fazer perguntas sobre seus documentos. 🚀`,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, successMessage]);
+      
+      toast({
+        title: "Upload realizado",
+        description: "Arquivos enviados com sucesso!",
+        variant: "default"
+      });
+
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido no upload';
+      
+      toast({
+        title: "Erro no upload",
+        description: errorMessage,
+        variant: "destructive"
+      });
+
+      // Adiciona mensagem de erro
+      const errorMsg: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: `❌ **Erro no upload dos arquivos**
+
+${errorMessage}
+
+**Tente novamente ou verifique sua conexão.**`,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Limpa todos os arquivos
@@ -65,7 +115,7 @@ export const useChat = () => {
       if (uploadedFiles.length === 0) {
         addAIMessage(`📋 **Olá! Sou seu assistente de análise contábil** 😊
 
-Para começarmos, preciso que você envie seus documentos contábeis (PDF, Excel ou CSV). 
+Para começarmos, preciso que você envie seus documentos contábeis (PDF). 
 
 Após o upload, poderei ajudá-lo com:
 • 📊 Análise de receitas e despesas
@@ -111,7 +161,6 @@ ${errorMessage}
     isLoading,
     uploadedFiles,
     addFiles,
-    removeFile,
     clearFiles,
     sendMessage,
     clearMessages
