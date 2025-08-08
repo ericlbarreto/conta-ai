@@ -87,39 +87,6 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
 
   return (
     <div className="space-y-3">
-      {!hasFiles && (
-        <div
-          className={`text-center px-6 py-3 bg-gradient-card rounded-lg border-2 border-dashed transition-all duration-300 ease-in-out cursor-pointer
-            ${isDragOver
-              ? 'border-primary/60 bg-primary/5 scale-105 shadow-lg' 
-              : 'border-muted-foreground/20 hover:border-primary/40 hover:bg-primary/5'
-            }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={handleFileClick}
-        >
-          <div className={`transition-all duration-300 ${isDragOver ? 'scale-110' : ''}`}>
-            {isDragOver ? (
-              <Upload className="h-12 w-12 mx-auto mb-3 text-primary animate-bounce" />
-            ) : (
-              <Paperclip className="h-8 w-8 mx-auto mb-2 text-muted-foreground transition-colors duration-300" />
-            )}
-          </div>
-          <p className={`text-sm mb-2 transition-all duration-300 ${
-            isDragOver ? 'text-primary font-medium' : 'text-muted-foreground'
-          }`}>
-            {isDragOver 
-              ? "🎯 Solte seus arquivos aqui!" 
-              : "📊 Arraste e solte ou clique para enviar seus documentos contábeis"
-            }
-          </p>
-          <p className="text-xs text-muted-foreground/70">
-            Suporta PDF
-          </p>
-        </div>
-      )}
-
       {/* Suggested Questions */}
       <div className="flex flex-wrap gap-2">
         {suggestedQuestions.map((question, index) => (
@@ -152,7 +119,7 @@ const ChatInput = ({ onSendMessage, isLoading, hasFiles, disabled = false, onFil
             style={{ height: 'auto' }}
           />
         </div>
-        
+
         {/* Botão de anexar */}
         <Button
           onClick={handleFileClick}

@@ -144,15 +144,15 @@ const ChatInterface = () => {
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">Olá! Sou seu assistente contábil 😊</h3>
                   <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                    Envie seus documentos contábeis (PDF) para começarmos a análise inteligente dos seus dados.
+                    Arraste e solte ou clique para anexar seus documentos contábeis (PDF) para começarmos a análise inteligente dos seus dados.
                   </p>
                 </div>
               )}
-              
+
               {messages.map((message) => (
                 <ChatMessage key={message.id} message={message} />
               ))}
-              
+
               {isLoading && (
                 <div className="flex gap-4">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-success text-white">
