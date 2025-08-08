@@ -52,7 +52,7 @@ const ChatInterface = () => {
     
     const files = Array.from(e.dataTransfer.files);
     const validFiles = files.filter(file => {
-      const validTypes = ['.pdf', '.xlsx', '.xls', '.csv'];
+      const validTypes = ['.pdf'];
       return validTypes.some(type => file.name.toLowerCase().includes(type));
     });
     
@@ -69,14 +69,14 @@ const ChatInterface = () => {
   }, [addFiles]);
 
   return (
-    <div className={`flex flex-col transition-all duration-300 ease-in-out ${
+    <div className={`${uploadedFiles.length > 0 ? 'mb-6' : 'mb-4'} h-full transition-all duration-300 ease-in-out ${
       isExpanded 
         ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'   
-        : 'h-full'
-    }`}>
-      <Card className={`h-full mb-3 flex flex-col transition-all duration-300 ease-in-out ${
+        : ''
+    } ${uploadedFiles.length > 0 ? 'grid grid-rows-[80%_20%] gap-3' : 'flex flex-col'}`}>
+      <Card className={`flex flex-col transition-all duration-300 ease-in-out ${
         isExpanded ? 'scale-100' : ''
-      } bg-gradient-card shadow-medium`}>
+      } bg-gradient-card shadow-medium ${uploadedFiles.length > 0 ? 'h-full' : 'h-full'}`}>
         <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
           <h3 className="font-semibold">ContaAI</h3>
           <div className="flex gap-2">
@@ -187,12 +187,14 @@ const ChatInterface = () => {
 
       {/* Arquivos selecionados - sempre visível */}
       {uploadedFiles.length > 0 && (
-        <div className="my-4 flex-shrink-0">
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Arquivos selecionados:</h4>
-            <div className="max-h-32 overflow-y-auto space-y-2">
+        <Card className={`bg-gradient-card shadow-medium h-full ${
+          isExpanded ? 'pb-4' : 'pb-0'
+        }`}>
+          <div className="p-4 h-full flex flex-col">
+            <h4 className="text-sm font-medium mb-3 flex-shrink-0">Arquivos selecionados:</h4>
+            <div className="flex-1 overflow-y-auto space-y-2">
               {uploadedFiles.map((file, index) => (
-                <Card key={index} className="flex items-center justify-between p-3">
+                <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
                       <Paperclip className="h-4 w-4 text-primary" />
@@ -204,11 +206,11 @@ const ChatInterface = () => {
                       </p>
                     </div>
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

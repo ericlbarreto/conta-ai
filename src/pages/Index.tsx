@@ -106,7 +106,7 @@ const Index = () => {
 
             {/* Coluna Direita - Chat Interface */}
             <div className="lg:sticky lg:top-8">
-              <div className="h-[calc(100vh-8rem)]">
+              <div className="h-[calc(100vh-8rem)] flex flex-col">
                 <ChatInterface />
               </div>
             </div>
