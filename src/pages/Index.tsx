@@ -1,5 +1,5 @@
-import Header from '@/components/Header';
 import ChatInterface from '@/components/ChatInterface';
+import Header from '@/components/Header';
 
 const Index = () => {
   return (
@@ -81,7 +81,7 @@ const Index = () => {
                       1
                     </div>
                     <p className="text-muted-foreground">
-                      <strong className="text-foreground">Envie seus documentos</strong> - PDF, Excel ou CSV
+                      <strong className="text-foreground">Envie seus documentos</strong> - PDF
                     </p>
                   </div>
                   <div className="flex items-start gap-3">
@@ -106,7 +106,7 @@ const Index = () => {
 
             {/* Coluna Direita - Chat Interface */}
             <div className="lg:sticky lg:top-8">
-              <div className="h-[calc(100vh-8rem)]">
+              <div className="h-[calc(100vh-8rem)] flex flex-col">
                 <ChatInterface />
               </div>
             </div>

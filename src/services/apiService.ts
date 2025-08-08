@@ -1,10 +1,18 @@
-import axios, { AxiosResponse } from 'axios';
 import { API_CONFIG, buildApiUrl } from '@/config/api';
+import axios, { AxiosResponse } from 'axios';
 
 // Interface para resposta da API
 interface AIResponse {
-  message: string;
+  answer: string;
   success: boolean;
+  error?: string;
+}
+
+// Interface para resposta do upload
+interface UploadResponse {
+  success: boolean;
+  message?: string;
+  filename?: string;
   error?: string;
 }
 
@@ -23,32 +31,71 @@ export class APIService {
     this.baseURL = url;
   }
 
-  // Envia mensagem e arquivos para a API de IA
-  async sendMessage(message: string, files: File[]): Promise<string> {
+  // Upload de arquivos para a API
+  async uploadFiles(files: File[]): Promise<string> {
     try {
       const formData = new FormData();
       
-      // Adiciona a mensagem
-      formData.append('message', message);
-      
-      // Adiciona os arquivos
-      files.forEach((file, index) => {
-        formData.append('files', file);
+      // Adiciona os arquivos com o atributo "file"
+      files.forEach((file) => {
+        formData.append('file', file);
       });
 
-      const response: AxiosResponse<AIResponse> = await axios.post(
-        buildApiUrl(API_CONFIG.CHAT_ENDPOINT),
+      const response: AxiosResponse<UploadResponse> = await axios.post(
+        buildApiUrl(API_CONFIG.UPLOAD_ENDPOINT),
         formData,
         {
-          timeout: this.timeout,
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         }
       );
 
-      if (response.data.success) {
-        return response.data.message;
+      if (response.status === 200) {
+        const hasManyFiles = files.length > 1;
+        const message = hasManyFiles ? 'Arquivos enviados com sucesso!' : 'Arquivo enviado com sucesso!';
+
+        return message;
+      } else {
+        throw new Error(response.data.error || 'Erro desconhecido no upload');
+      }
+    } catch (error: unknown) {
+      console.error('Erro no upload:', error);
+      
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'ECONNREFUSED') {
+        throw new Error('❌ **Servidor não encontrado**\n\nVerifique se a API está rodando em ' + this.baseURL);
+      }
+      
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response) {
+        if (error.response.status === 500) {
+          throw new Error('❌ **Erro interno do servidor**\n\nTente novamente em alguns instantes.');
+        }
+        
+        if (error.response.status === 413) {
+          throw new Error('❌ **Arquivo muito grande**\n\nO arquivo enviado excede o limite permitido.');
+        }
+      }
+      
+      throw new Error('❌ **Erro no upload**\n\nVerifique sua conexão e tente novamente.');
+    }
+  }
+
+  // Envia mensagem e arquivos para a API de IA
+  async sendMessage(message: string): Promise<string> {
+    try {
+      const response: AxiosResponse<AIResponse> = await axios.post(
+        buildApiUrl(API_CONFIG.CHAT_ENDPOINT),
+        { question: message },
+        {
+          timeout: this.timeout,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data.answer;
       } else {
         throw new Error(response.data.error || 'Erro desconhecido na API');
       }

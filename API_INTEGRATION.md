@@ -17,10 +17,13 @@ VITE_API_URL=http://localhost:3001
 A API deve implementar os seguintes endpoints:
 
 #### 1. Health Check
+
 ```
 GET /api/health
 ```
+
 **Resposta esperada:**
+
 ```json
 {
   "status": "ok",
@@ -29,16 +32,19 @@ GET /api/health
 ```
 
 #### 2. Chat com IA
+
 ```
 POST /api/ai/chat
 Content-Type: multipart/form-data
 ```
 
 **Payload:**
+
 - `message`: string (mensagem do usuário)
-- `files`: File[] (arquivos PDF, Excel, CSV)
+- `files`: File[] (arquivos PDF)
 
 **Resposta esperada:**
+
 ```json
 {
   "success": true,
@@ -48,6 +54,7 @@ Content-Type: multipart/form-data
 ```
 
 **Exemplo de erro:**
+
 ```json
 {
   "success": false,
@@ -61,26 +68,26 @@ Content-Type: multipart/form-data
 ### Exemplo em Node.js/Express
 
 ```javascript
-const express = require('express');
-const multer = require('multer');
+const express = require("express");
+const multer = require("multer");
 const app = express();
 
 const upload = multer({
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB
-  }
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
 });
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString()
+    status: "ok",
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Chat endpoint
-app.post('/api/ai/chat', upload.array('files'), async (req, res) => {
+app.post("/api/ai/chat", upload.array("files"), async (req, res) => {
   try {
     const { message } = req.body;
     const files = req.files || [];
@@ -92,19 +99,19 @@ app.post('/api/ai/chat', upload.array('files'), async (req, res) => {
     res.json({
       success: true,
       message: aiResponse,
-      error: null
+      error: null,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: null,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
 app.listen(3001, () => {
-  console.log('API rodando na porta 3001');
+  console.log("API rodando na porta 3001");
 });
 ```
 
@@ -129,11 +136,11 @@ def chat():
     try:
         message = request.form.get('message')
         files = request.files.getlist('files')
-        
+
         # Aqui você implementa sua lógica de IA
         # Processe os arquivos e a mensagem
         ai_response = process_with_ai(message, files)
-        
+
         return jsonify({
             'success': True,
             'message': ai_response,
@@ -172,6 +179,7 @@ O frontend trata os seguintes erros:
 ## Configurações Avançadas
 
 ### Timeout
+
 O timeout padrão é 30 segundos. Você pode alterar em `src/config/api.ts`:
 
 ```typescript
@@ -179,25 +187,30 @@ TIMEOUT: 30000, // 30 segundos
 ```
 
 ### Tamanho máximo de arquivo
+
 ```typescript
 MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
 ```
 
 ### Tipos de arquivo permitidos
+
 ```typescript
-ALLOWED_FILE_TYPES: ['.pdf', '.xlsx', '.xls', '.csv']
+ALLOWED_FILE_TYPES: [".pdf", ".xlsx", ".xls", ".csv"];
 ```
 
 ## Estrutura de Dados
 
 ### Arquivos
+
 Os arquivos são enviados como `File[]` do navegador, mantendo:
+
 - Nome original
 - Tipo MIME
 - Tamanho
 - Conteúdo binário
 
 ### Mensagens
+
 As mensagens são strings simples que podem conter markdown para formatação.
 
 ## Logs e Debug
@@ -213,4 +226,4 @@ O frontend loga erros no console. Para debug:
 - Validação de tipos de arquivo no frontend
 - Limite de tamanho de arquivo
 - Sanitização de mensagens
-- Headers CORS apropriados na API 
+- Headers CORS apropriados na API

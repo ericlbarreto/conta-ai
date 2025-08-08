@@ -17,7 +17,7 @@
 - 📊 **Análise Completa** - Receitas, despesas, lucros, impostos e tendências
 - ⚡ **Resposta Instantânea** - Resultados em segundos
 - 🔒 **Seguro e Privado** - Criptografia de ponta a ponta
-- 📁 **Upload Inteligente** - Suporte a PDF, Excel e CSV
+- 📁 **Upload Inteligente** - Suporte a PDF
 - 💬 **Chat Interativo** - Interface conversacional intuitiva
 
 ## 🛠️ Tecnologias Utilizadas
@@ -33,7 +33,7 @@
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 
 ### Passos para Instalação
@@ -71,11 +71,13 @@ npm run lint:fix     # Corrige problemas de linting
 ## 🎯 Como Usar
 
 ### 1. Upload de Documentos
-- Arraste e solte arquivos PDF, Excel ou CSV no chat
+
+- Arraste e solte arquivos PDF no chat
 - Ou clique no ícone de clipe para selecionar arquivos
 - Suporte a múltiplos arquivos simultâneos
 
 ### 2. Análise Inteligente
+
 - Faça perguntas sobre seus dados contábeis
 - Exemplos de perguntas:
   - "Qual foi o lucro líquido no último período?"
@@ -84,6 +86,7 @@ npm run lint:fix     # Corrige problemas de linting
   - "Identifique tendências nos números"
 
 ### 3. Insights Automáticos
+
 - Receba análises detalhadas em tempo real
 - Visualize tendências e padrões
 - Obtenha sugestões de otimização
@@ -124,11 +127,13 @@ VITE_API_URL=http://localhost:3001
 ### Estrutura da API Esperada
 
 #### Health Check
+
 ```http
 GET /api/health
 ```
 
 #### Chat com IA
+
 ```http
 POST /api/ai/chat
 Content-Type: multipart/form-data
@@ -142,16 +147,17 @@ Content-Type: multipart/form-data
 ## 🎨 Interface
 
 ### Layout Responsivo
+
 - **Desktop**: Layout de duas colunas com chat fixo
 - **Mobile**: Layout em coluna única
 - **Chat**: Interface conversacional com drag & drop
 
 ### Features Visuais
+
 - Design moderno e limpo
 - Tema escuro por padrão
 - Animações suaves
 - Feedback visual em tempo real
-
 
 ## 🤝 Contribuição
 
@@ -164,7 +170,6 @@ Content-Type: multipart/form-data
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
 
 ---
 

@@ -1,11 +1,11 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
-import { useChat } from '@/hooks/useChat';
 import { Button } from '@/components/ui/button';
-import { Trash2, Paperclip, Maximize2, Minimize2 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useChat } from '@/hooks/useChat';
+import { Maximize2, Minimize2, Paperclip, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
 
 const ChatInterface = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -16,7 +16,6 @@ const ChatInterface = () => {
     isLoading,
     uploadedFiles,
     addFiles,
-    removeFile,
     clearFiles,
     sendMessage,
     clearMessages
@@ -47,37 +46,37 @@ const ChatInterface = () => {
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     
     const files = Array.from(e.dataTransfer.files);
     const validFiles = files.filter(file => {
-      const validTypes = ['.pdf', '.xlsx', '.xls', '.csv'];
+      const validTypes = ['.pdf'];
       return validTypes.some(type => file.name.toLowerCase().includes(type));
     });
     
     if (validFiles.length > 0) {
-      addFiles(validFiles);
+      await addFiles(validFiles);
     }
   }, [addFiles]);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      addFiles(files);
+      await addFiles(files);
     }
   }, [addFiles]);
 
   return (
-    <div className={`flex flex-col transition-all duration-300 ease-in-out ${
-      isExpanded 
-        ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'   
-        : 'h-full'
-    }`}>
+    <div className={`${uploadedFiles.length > 0 ? 'mb-6' : 'mb-4'} h-full transition-all duration-300 ease-in-out ${
+      isExpanded
+        ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'
+        : ''
+    } ${uploadedFiles.length > 0 ? 'grid grid-rows-[85%_15%] gap-3 min-h-0' : 'flex flex-col'}`}>
       <Card className={`flex flex-col transition-all duration-300 ease-in-out ${
-        isExpanded ? 'h-full scale-100' : 'h-[600px]'
-      } bg-gradient-card shadow-medium`}>
+        isExpanded ? 'scale-100' : ''
+      } bg-gradient-card shadow-medium ${uploadedFiles.length > 0 ? 'h-full' : 'h-full'}`}>
         <div className="flex items-center justify-between p-4 border-b border-border flex-shrink-0">
           <h3 className="font-semibold">ContaAI</h3>
           <div className="flex gap-2">
@@ -110,8 +109,8 @@ const ChatInterface = () => {
             </Button>
           </div>
         </div>
-        
-        <div 
+
+        <div
           className={`flex-1 relative overflow-hidden ${
             isDragging ? 'bg-primary/5' : ''
           }`}
@@ -130,7 +129,7 @@ const ChatInterface = () => {
                   Solte seus arquivos aqui
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  PDF, Excel ou CSV
+                  PDF
                 </p>
               </div>
             </div>
@@ -145,7 +144,7 @@ const ChatInterface = () => {
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">Olá! Sou seu assistente contábil 😊</h3>
                   <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                    Envie seus documentos contábeis (PDF, Excel, CSV) para começarmos a análise inteligente dos seus dados.
+                    Envie seus documentos contábeis (PDF) para começarmos a análise inteligente dos seus dados.
                   </p>
                 </div>
               )}
@@ -166,7 +165,7 @@ const ChatInterface = () => {
                         <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]"></div>
                         <div className="h-2 w-2 animate-bounce rounded-full bg-primary"></div>
                       </div>
-                      <span className="text-sm text-muted-foreground">Analisando documentos...</span>
+                      <span className="text-sm text-muted-foreground">Analisando documento...</span>
                     </div>
                   </Card>
                 </div>
@@ -174,7 +173,7 @@ const ChatInterface = () => {
             </div>
           </ScrollArea>
         </div>
-        
+
         <div className="border-t border-border p-4 flex-shrink-0">
           <ChatInput
             onSendMessage={handleSendMessage}
@@ -188,12 +187,14 @@ const ChatInterface = () => {
 
       {/* Arquivos selecionados - sempre visível */}
       {uploadedFiles.length > 0 && (
-        <div className="mt-4 flex-shrink-0">
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Arquivos selecionados:</h4>
-            <div className="max-h-32 overflow-y-auto space-y-2">
+        <Card className={`bg-gradient-card shadow-medium min-h-0 ${
+          isExpanded ? 'pb-4' : 'pb-0'
+        }`}>
+          <div className="p-4 h-full flex flex-col min-h-0">
+            <h4 className="text-sm font-medium mb-3 flex-shrink-0">Arquivo selecionado:</h4>
+            <div className="flex-1 space-y-2 min-h-0">
               {uploadedFiles.map((file, index) => (
-                <Card key={index} className="flex items-center justify-between p-3">
+                <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
                       <Paperclip className="h-4 w-4 text-primary" />
@@ -205,20 +206,11 @@ const ChatInterface = () => {
                       </p>
                     </div>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeFile(index)}
-                    className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
