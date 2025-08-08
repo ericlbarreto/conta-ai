@@ -1,7 +1,12 @@
 // Configurações da API
+const LOCAL_URL = 'http://localhost:8000';
+const PROD_URL = 'https://chatbot-contabil.onrender.com';
+
 export const API_CONFIG = {
+  LOCAL_URL: LOCAL_URL,
+  PROD_URL: import.meta.env.VITE_API_URL || PROD_URL,
   // URL base da API de IA
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  BASE_URL: PROD_URL || LOCAL_URL,
   
   // Endpoint para chat
   CHAT_ENDPOINT: '/question',

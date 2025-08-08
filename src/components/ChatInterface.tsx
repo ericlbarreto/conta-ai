@@ -70,10 +70,10 @@ const ChatInterface = () => {
 
   return (
     <div className={`${uploadedFiles.length > 0 ? 'mb-6' : 'mb-4'} h-full transition-all duration-300 ease-in-out ${
-      isExpanded 
-        ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'   
+      isExpanded
+        ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-sm'
         : ''
-    } ${uploadedFiles.length > 0 ? 'grid grid-rows-[80%_20%] gap-3' : 'flex flex-col'}`}>
+    } ${uploadedFiles.length > 0 ? 'grid grid-rows-[85%_15%] gap-3 min-h-0' : 'flex flex-col'}`}>
       <Card className={`flex flex-col transition-all duration-300 ease-in-out ${
         isExpanded ? 'scale-100' : ''
       } bg-gradient-card shadow-medium ${uploadedFiles.length > 0 ? 'h-full' : 'h-full'}`}>
@@ -109,8 +109,8 @@ const ChatInterface = () => {
             </Button>
           </div>
         </div>
-        
-        <div 
+
+        <div
           className={`flex-1 relative overflow-hidden ${
             isDragging ? 'bg-primary/5' : ''
           }`}
@@ -165,7 +165,7 @@ const ChatInterface = () => {
                         <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]"></div>
                         <div className="h-2 w-2 animate-bounce rounded-full bg-primary"></div>
                       </div>
-                      <span className="text-sm text-muted-foreground">Analisando documentos...</span>
+                      <span className="text-sm text-muted-foreground">Analisando documento...</span>
                     </div>
                   </Card>
                 </div>
@@ -173,7 +173,7 @@ const ChatInterface = () => {
             </div>
           </ScrollArea>
         </div>
-        
+
         <div className="border-t border-border p-4 flex-shrink-0">
           <ChatInput
             onSendMessage={handleSendMessage}
@@ -187,12 +187,12 @@ const ChatInterface = () => {
 
       {/* Arquivos selecionados - sempre visível */}
       {uploadedFiles.length > 0 && (
-        <Card className={`bg-gradient-card shadow-medium h-full ${
+        <Card className={`bg-gradient-card shadow-medium min-h-0 ${
           isExpanded ? 'pb-4' : 'pb-0'
         }`}>
-          <div className="p-4 h-full flex flex-col">
-            <h4 className="text-sm font-medium mb-3 flex-shrink-0">Arquivos selecionados:</h4>
-            <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="p-4 h-full flex flex-col min-h-0">
+            <h4 className="text-sm font-medium mb-3 flex-shrink-0">Arquivo selecionado:</h4>
+            <div className="flex-1 space-y-2 min-h-0">
               {uploadedFiles.map((file, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
                   <div className="flex items-center gap-3">

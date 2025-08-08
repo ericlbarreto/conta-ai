@@ -10,7 +10,7 @@ export const useChat = () => {
   
   const apiService = new APIService();
 
-  // Adiciona arquivos e faz upload
+  // Adiciona arquivos e faz upload (substitui arquivos anteriores)
   const addFiles = useCallback(async (files: File[]) => {
     if (files.length === 0) return;
 
@@ -20,18 +20,18 @@ export const useChat = () => {
       // Faz upload dos arquivos
       const uploadMessage = await apiService.uploadFiles(files);
       
-      // Adiciona os arquivos ao estado local
-      setUploadedFiles(prev => [...prev, ...files]);
+      // Substitui os arquivos anteriores pelos novos
+      setUploadedFiles(files);
       
       // Adiciona mensagem de sucesso
       const successMessage: ChatMessage = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: `✅ **Arquivos enviados com sucesso!**
+        content: `✅ **Arquivo enviado com sucesso!**
 
 ${uploadMessage}
 
-Agora você pode fazer perguntas sobre seus documentos. 🚀`,
+Agora você pode fazer perguntas sobre seu documento. 🚀`,
         timestamp: new Date()
       };
       
@@ -39,7 +39,7 @@ Agora você pode fazer perguntas sobre seus documentos. 🚀`,
       
       toast({
         title: "Upload realizado",
-        description: "Arquivos enviados com sucesso!",
+        description: "Arquivo enviado com sucesso!",
         variant: "default"
       });
 
@@ -56,7 +56,7 @@ Agora você pode fazer perguntas sobre seus documentos. 🚀`,
       const errorMsg: ChatMessage = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: `❌ **Erro no upload dos arquivos**
+        content: `❌ **Erro no upload do arquivo**
 
 ${errorMessage}
 
@@ -129,7 +129,7 @@ Após o upload, poderei ajudá-lo com:
       }
 
       // Envia para a API
-      const response = await apiService.sendMessage(message, uploadedFiles);
+      const response = await apiService.sendMessage(message);
       addAIMessage(response);
 
     } catch (error: unknown) {

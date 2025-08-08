@@ -45,7 +45,6 @@ export class APIService {
         buildApiUrl(API_CONFIG.UPLOAD_ENDPOINT),
         formData,
         {
-          timeout: this.timeout,
           headers: {
             'Content-Type': 'multipart/form-data',
           },
